@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝐶𝑜𝑚𝑚𝑒𝑛𝑡 𝐸𝑟𝑎𝑠𝑒𝑟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .editor-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .editor-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .editor-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .char-count {
+            font-size: 12px;
+            color: #999;
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            transition: border-color 0.3s;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #output {
+            background-color: #f8f9fa;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-copy {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #059669;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .editor-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HTML 주석 제거 도구</h1>
+        <p class="subtitle">HTML, CSS, JavaScript 주석을 안전하게 제거합니다</p>
+        
+        <div class="editor-wrapper">
+            <div class="editor-section">
+                <div class="editor-header">
+                    <span class="editor-title">입력 (원본 코드)</span>
+                    <span class="char-count" id="inputCount">0 글자</span>
+                </div>
+                <textarea id="input" placeholder="HTML 코드를 여기에 붙여넣으세요..."></textarea>
+            </div>
+            
+            <div class="editor-section">
+                <div class="editor-header">
+                    <span class="editor-title">출력 (주석 제거됨)</span>
+                    <span class="char-count" id="outputCount">0 글자</span>
+                </div>
+                <textarea id="output" readonly placeholder="주석이 제거된 코드가 여기에 표시됩니다..."></textarea>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="removeComments()">주석 제거</button>
+            <button class="btn-copy" onclick="copyToClipboard()">결과 복사</button>
+            <button class="btn-secondary" onclick="clearAll()">전체 지우기</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="removedCount">0</div>
+                <div class="stat-label">제거된 주석</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="savedBytes">0</div>
+                <div class="stat-label">줄어든 용량 (bytes)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputEl = document.getElementById('input');
+        const outputEl = document.getElementById('output');
+        const inputCountEl = document.getElementById('inputCount');
+        const outputCountEl = document.getElementById('outputCount');
+        const removedCountEl = document.getElementById('removedCount');
+        const savedBytesEl = document.getElementById('savedBytes');
+
+        inputEl.addEventListener('input', updateInputCount);
+
+        function updateInputCount() {
+            inputCountEl.textContent = inputEl.value.length.toLocaleString() + ' 글자';
+        }
+
+        function updateOutputCount() {
+            outputCountEl.textContent = outputEl.value.length.toLocaleString() + ' 글자';
+        }
+
+        function removeComments() {
+            const code = inputEl.value;
+            if (!code.trim()) {
+                alert('코드를 입력해주세요.');
+                return;
+            }
+
+            let result = code;
+            let commentCount = 0;
+
+            result = result.replace(/<!--[\s\S]*?-->/g, function() {
+                commentCount++;
+                return '';
+            });
+
+            let inString = false;
+            let stringChar = '';
+            let inMultiComment = false;
+            let inSingleComment = false;
+            let output = '';
+            let i = 0;
+
+            while (i < result.length) {
+                const char = result[i];
+                const nextChar = result[i + 1];
+
+                if (!inString && !inMultiComment && !inSingleComment) {
+                    if ((char === '"' || char === "'" || char === '`') && (i === 0 || result[i - 1] !== '\\')) {
+                        inString = true;
+                        stringChar = char;
+                        output += char;
+                        i++;
+                        continue;
+                    }
+
+                    if (char === '/' && nextChar === '*') {
+                        inMultiComment = true;
+                        commentCount++;
+                        i += 2;
+                        continue;
+                    }
+
+                    if (char === '/' && nextChar === '/') {
+                        inSingleComment = true;
+                        commentCount++;
+                        i += 2;
+                        continue;
+                    }
+
+                    output += char;
+                    i++;
+                    continue;
+                }
+
+                if (inString) {
+                    output += char;
+                    if (char === stringChar && result[i - 1] !== '\\') {
+                        let backslashCount = 0;
+                        let j = i - 1;
+                        while (j >= 0 && result[j] === '\\') {
+                            backslashCount++;
+                            j--;
+                        }
+                        if (backslashCount % 2 === 0) {
+                            inString = false;
+                        }
+                    }
+                    i++;
+                    continue;
+                }
+
+                if (inMultiComment) {
+                    if (char === '*' && nextChar === '/') {
+                        inMultiComment = false;
+                        i += 2;
+                        continue;
+                    }
+                    i++;
+                    continue;
+                }
+
+                if (inSingleComment) {
+                    if (char === '\n' || char === '\r') {
+                        inSingleComment = false;
+                        output += char;
+                    }
+                    i++;
+                    continue;
+                }
+
+                i++;
+            }
+
+            outputEl.value = output;
+            updateOutputCount();
+
+            const savedBytes = new Blob([code]).size - new Blob([output]).size;
+            removedCountEl.textContent = commentCount.toLocaleString();
+            savedBytesEl.textContent = savedBytes.toLocaleString();
+        }
+
+        function copyToClipboard() {
+            if (!outputEl.value) {
+                alert('복사할 내용이 없습니다.');
+                return;
+            }
+
+            outputEl.select();
+            document.execCommand('copy');
+            
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✓ 복사됨!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+
+        function clearAll() {
+            if (inputEl.value || outputEl.value) {
+                if (confirm('모든 내용을 지우시겠습니까?')) {
+                    inputEl.value = '';
+                    outputEl.value = '';
+                    updateInputCount();
+                    updateOutputCount();
+                    removedCountEl.textContent = '0';
+                    savedBytesEl.textContent = '0';
+                }
+            }
+        }
+</script>
+</body>
+</html>
+
+
