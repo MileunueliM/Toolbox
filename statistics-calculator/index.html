@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="icon" type="image/png" href="./statistics-calculator.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>𝑆𝑡𝑎𝑡𝑖𝑠𝑡𝑖𝑐𝑠 𝐶𝑎𝑙𝑐𝑢𝑙𝑎𝑡𝑜𝑟</title>
@@ -300,22 +301,22 @@
             document.execCommand('copy');
             document.body.removeChild(textarea);
             
-            // 버튼 상태 변경
+            
             const copyBtn = actionButtons.querySelector('button[onclick="copyResult()"]');
             const originalIcon = copyBtn.innerHTML;
             
-            // 연한 초록색 배경과 체크 아이콘 적용
+            
             copyBtn.innerHTML = `<i data-lucide="check" class="w-5 h-5 text-green-600"></i>`;
             copyBtn.classList.remove('hover:bg-slate-100', 'text-slate-400');
             copyBtn.classList.add('bg-green-100');
             
-            // 아이콘 다시 렌더링
+            
             lucide.createIcons({
                 nameAttr: 'data-lucide',
                 root: copyBtn
             });
 
-            // 1초 후 원래 상태로 복구
+            
             setTimeout(() => {
                 copyBtn.innerHTML = originalIcon;
                 copyBtn.classList.add('hover:bg-slate-100', 'text-slate-400');
