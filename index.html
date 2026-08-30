@@ -32,12 +32,27 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                          "Noto Sans KR", Arial, sans-serif;
             background:
-                radial-gradient(circle at 12% 18%, rgba(255,255,255,0.18), transparent 28%),
-                radial-gradient(circle at 88% 82%, rgba(255,255,255,0.10), transparent 24%),
-                linear-gradient(135deg, #5f7ce8 0%, #7068d8 48%, #8451b4 100%);
+                radial-gradient(circle at 18% 20%, rgba(255,255,255,0.26), transparent 24%),
+                radial-gradient(circle at 82% 78%, rgba(255,255,255,0.16), transparent 24%),
+                linear-gradient(120deg, #7198ea 0%, #6484e3 24%, #6b6fce 45%, #755dc0 66%, #8754b6 82%, #965bbf 100%);
+            background-size: 180% 180%, 170% 170%, 220% 220%;
+            background-position: 8% 12%, 90% 88%, 0% 50%;
+            animation: gradientShift 14s ease-in-out infinite alternate;
             color: var(--text);
             position: relative;
             overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 8% 12%, 90% 88%, 0% 50%;
+            }
+            50% {
+                background-position: 22% 28%, 78% 70%, 52% 48%;
+            }
+            100% {
+                background-position: 38% 44%, 62% 56%, 100% 50%;
+            }
         }
 
         body::before {
@@ -232,17 +247,6 @@
         </header>
 
         <section class="tool-grid" aria-label="도구 목록">
-            <a class="tool-card" href="./comment-eraser/" aria-label="Comment Eraser 열기">
-                <img class="tool-icon" src="./icons/comment-eraser.png" alt="Comment Eraser 로고">
-                <div class="tool-overlay">
-                    <div class="tool-info">
-                        <h2 class="tool-name">Comment Eraser</h2>
-                        <p class="tool-description">HTML, CSS, JavaScript 코드의 주석을 제거하는 도구입니다.</p>
-                        <div class="tool-arrow">열기 →</div>
-                    </div>
-                </div>
-            </a>
-
             <a class="tool-card" href="./italicify/" aria-label="Italicify 열기">
                 <img class="tool-icon" src="./icons/italicify.png" alt="Italicify 로고">
                 <div class="tool-overlay">
@@ -254,23 +258,34 @@
                 </div>
             </a>
 
-            <a class="tool-card" href="./statistics-calculator/" aria-label="Statistics Calculator 열기">
-                <img class="tool-icon" src="./icons/statistics-calculator.png" alt="Statistics Calculator 로고">
-                <div class="tool-overlay">
-                    <div class="tool-info">
-                        <h2 class="tool-name">Statistics Calculator</h2>
-                        <p class="tool-description">평균, 중앙값, 최빈값, 최대·최소값과 범위를 계산합니다.</p>
-                        <div class="tool-arrow">열기 →</div>
-                    </div>
-                </div>
-            </a>
-
             <a class="tool-card" href="./textcounter/" aria-label="Textcounter 열기">
                 <img class="tool-icon" src="./icons/textcounter.png" alt="Textcounter 로고">
                 <div class="tool-overlay">
                     <div class="tool-info">
                         <h2 class="tool-name">Textcounter</h2>
                         <p class="tool-description">글자 수, 공백 제외, 단어 수, 단락 수, 문장 수를 계산합니다.</p>
+                        <div class="tool-arrow">열기 →</div>
+                    </div>
+                </div>
+            </a>
+
+            <a class="tool-card" href="./comment-eraser/" aria-label="Comment Eraser 열기">
+                <img class="tool-icon" src="./icons/comment-eraser.png" alt="Comment Eraser 로고">
+                <div class="tool-overlay">
+                    <div class="tool-info">
+                        <h2 class="tool-name">Comment Eraser</h2>
+                        <p class="tool-description">HTML, CSS, JavaScript 코드의 주석을 제거하는 도구입니다.</p>
+                        <div class="tool-arrow">열기 →</div>
+                    </div>
+                </div>
+            </a>
+
+            <a class="tool-card" href="./statistics-calculator/" aria-label="Statistics Calculator 열기">
+                <img class="tool-icon" src="./icons/statistics-calculator.png" alt="Statistics Calculator 로고">
+                <div class="tool-overlay">
+                    <div class="tool-info">
+                        <h2 class="tool-name">Statistics Calculator</h2>
+                        <p class="tool-description">평균, 중앙값, 최빈값, 최대·최소값과 범위를 계산합니다.</p>
                         <div class="tool-arrow">열기 →</div>
                     </div>
                 </div>
