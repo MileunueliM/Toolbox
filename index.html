@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝐼𝑡𝑎𝑙𝑖𝑐𝑖𝑓𝑦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Use a specific version of babel-standalone to avoid the module error -->
+    <script src="https://unpkg.com/@babel/standalone@7.23.1/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const convertToItalic = (char) => {
+            const code = char.codePointAt(0);
+            
+            // --- 수정된 부분 시작 ---
+            if (char === 'h') {
+                return '𝒉';
+            }
+            // --- 수정된 부분 끝 ---
+
+            if (code >= 65 && code <= 90) {
+                return String.fromCodePoint(code + 119795);
+            }
+            if (code >= 97 && code <= 122) {
+                return String.fromCodePoint(code + 119789);
+            }
+            
+            return char;
+        };
+
+        const App = () => {
+            const [input, setInput] = useState('');
+            const [output, setOutput] = useState('');
+            const [copied, setCopied] = useState(false);
+            const inputRef = useRef(null);
+
+            useEffect(() => {
+                if (!input) {
+                    setOutput('');
+                    return;
+                }
+                const result = Array.from(input).map(char => convertToItalic(char)).join('');
+                setOutput(result);
+            }, [input]);
+
+            const handleCopy = () => {
+                if (!output) return;
+                const tempTextArea = document.createElement("textarea");
+                tempTextArea.value = output;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(tempTextArea);
+                
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            const handleKeyDown = (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleCopy();
+                }
+            };
+
+            const handleClear = () => {
+                setInput('');
+                setOutput('');
+                setCopied(false);
+                inputRef.current.focus();
+            };
+
+            useEffect(() => {
+                lucide.createIcons();
+            }, [output, copied]);
+
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-indigo-50 to-blue-100 font-sans">
+                    <header className="mb-8 text-center">
+                        <div className="flex items-center justify-center gap-3 mb-2">
+                            <div className="flex items-center justify-center w-14 h-14 rounded-xl shadow-lg" style={{ backgroundColor: '#566EE3' }}>
+                                <span className="text-2xl font-serif font-bold text-white italic leading-none">𝑓𝑥</span>
+                            </div>
+                            <h1 className="text-3xl font-bold text-slate-800 tracking-tight">𝐼𝑡𝑎𝑙𝑖𝑐𝑖𝑓𝑦</h1>
+                        </div>
+                        <p className="text-slate-500 text-sm font-medium">실시간 이탤릭체 텍스트 변환기</p>
+                    </header>
+
+                    <main className="w-full max-w-2xl glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+                        
+                        <div className="space-y-2">
+                            <label className="block text-xs font-bold text-indigo-600 uppercase tracking-wider ml-1">
+                                입력 (𝐼𝑁𝑃𝑈𝑇)
+                            </label>
+                            <div className="relative group">
+                                <textarea
+                                    ref={inputRef}
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="텍스트를 입력하면 바로 변환됩니다..."
+                                    className="w-full h-32 p-5 rounded-2xl bg-slate-50 border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 resize-none transition-all duration-300 text-slate-700 text-lg placeholder-slate-400 leading-relaxed shadow-inner"
+                                    spellCheck="false"
+                                />
+                                {input && (
+                                    <button 
+                                        onClick={handleClear}
+                                        className="absolute top-4 right-4 p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                                        title="지우기"
+                                    >
+                                        <i data-lucide="x" className="w-5 h-5"></i>
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-center -my-2 opacity-50">
+                             <div className="bg-slate-100 p-2 rounded-full border border-slate-200">
+                                <i data-lucide="arrow-down" className="w-5 h-5 text-indigo-400"></i>
+                             </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-xs font-bold text-indigo-600 uppercase tracking-wider ml-1">
+                                결과 (𝑅𝐸𝑆𝑈𝐿𝑇)
+                            </label>
+                            <div className="relative group">
+                                <div className="w-full h-32 p-5 rounded-2xl bg-indigo-900/5 border border-indigo-100 text-lg text-indigo-900 break-all overflow-y-auto leading-relaxed shadow-inner font-medium">
+                                    {output || <span className="text-indigo-900/30 italic">변환된 텍스트가 여기에 나타납니다...</span>}
+                                </div>
+                                <div className="absolute bottom-4 right-4">
+                                    <button
+                                        onClick={handleCopy}
+                                        disabled={!output}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold shadow-md transition-all duration-300 transform active:scale-95 ${
+                                            copied 
+                                            ? 'bg-green-500 text-white shadow-green-500/20' 
+                                            : output 
+                                                ? 'bg-white text-indigo-600 hover:bg-indigo-50 border border-indigo-100' 
+                                                : 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                                        }`}
+                                    >
+                                        {copied ? (
+                                            <>
+                                                <i data-lucide="check" className="w-4 h-4"></i>
+                                                <span className="text-sm">복사됨</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i data-lucide="copy" className="w-4 h-4"></i>
+                                                <span className="text-sm">복사</span>
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </main>
+
+                    <footer className="mt-8 text-center text-slate-400 text-xs">
+                        <p className="mb-1">ver. 2.1 - Automatic Technology Added</p>
+                        <p>© 2026 𝐼𝑡𝑎𝑙𝑖𝑐𝑖𝑓𝑦</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 100);
+    </script>
+</body>
+</html>
