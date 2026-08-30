@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="icon" type="image/png" href="./italicify.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>𝐼𝑡𝑎𝑙𝑖𝑐𝑖𝑓𝑦</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Use a specific version of babel-standalone to avoid the module error -->
+    
     <script src="https://unpkg.com/@babel/standalone@7.23.1/babel.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -33,11 +34,11 @@
         const convertToItalic = (char) => {
             const code = char.codePointAt(0);
             
-            // --- 수정된 부분 시작 ---
+            
             if (char === 'h') {
                 return '𝒉';
             }
-            // --- 수정된 부분 끝 ---
+            
 
             if (code >= 65 && code <= 90) {
                 return String.fromCodePoint(code + 119795);
